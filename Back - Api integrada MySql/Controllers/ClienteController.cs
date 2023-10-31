@@ -35,7 +35,8 @@ public class ClienteController : ControllerBase
 
     [HttpPost]
     [Route("clientes")]
-    public async Task<IActionResult> PostCliente([FromServices] LojaContexto contexto, [FromBody] AdicionarClienteDtos novoCliente)
+    public async Task<IActionResult> PostCliente([FromServices] LojaContexto contexto
+        ,[FromForm] AdicionarClienteDtos novoCliente)
     {
         if (!ModelState.IsValid)
         {

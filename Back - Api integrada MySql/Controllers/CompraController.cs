@@ -35,7 +35,8 @@ public class CompraController : ControllerBase
 
     [HttpPost]
     [Route("compras")]
-    public async Task<IActionResult> PostProduto([FromServices] LojaContexto contexto, [FromBody] AdicionarCompraDtos novaCompra)
+    public async Task<IActionResult> PostProduto([FromServices] LojaContexto contexto
+        ,[FromBody] AdicionarCompraDtos novaCompra)
     {
         if (!ModelState.IsValid)
         {
@@ -51,7 +52,7 @@ public class CompraController : ControllerBase
 
         await contexto.Compras.AddAsync(compra);
         await contexto.SaveChangesAsync();
-        return Created($"compras/{novaCompra.Id}", compra);
+        return Created($"compras/{compra.Id}", compra);
     }
 
     [HttpPut]
