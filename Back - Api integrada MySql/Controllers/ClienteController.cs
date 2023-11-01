@@ -17,7 +17,10 @@ public class ClienteController : ControllerBase
 
         if (clientes == null) return NotFound();
 
-        return Ok(clientes);
+        var clientesInclude = await contexto.Clientes
+            .Include(cliente => cliente.EnderecoDeEntrega).AsNoTracking().ToListAsync();
+
+        return Ok(clientesInclude);
     }
 
     [HttpGet]
@@ -30,13 +33,17 @@ public class ClienteController : ControllerBase
 
         if (cliente == null) return NotFound();
 
-        return Ok(cliente);
+        var clienteInclude = await contexto.Clientes
+            .Include(cliente => cliente.EnderecoDeEntrega)
+            .FirstOrDefaultAsync(clienteBanco => clienteBanco.Id == cliente.Id);
+
+        return Ok(clienteInclude);
     }
 
     [HttpPost]
     [Route("clientes")]
     public async Task<IActionResult> PostCliente([FromServices] LojaContexto contexto
-        ,[FromForm] AdicionarClienteDtos novoCliente)
+        ,[FromBody] AdicionarClienteDtos novoCliente)
     {
         if (!ModelState.IsValid)
         {
@@ -49,28 +56,48 @@ public class ClienteController : ControllerBase
             EnderecoId = novoCliente.EnderecoId
         };
 
+        var verificaEndereco = await contexto
+            .Enderecos
+            .FirstOrDefaultAsync(endereco => endereco.Id == cliente.EnderecoId);
+
+        Console.WriteLine(verificaEndereco);
+
+        if (verificaEndereco == null)
+        {
+            return NotFound();
+        }
+
         await contexto.Clientes.AddAsync(cliente);
         await contexto.SaveChangesAsync();
 
-        return Created($"clientes/{cliente.Id}", cliente);
+        
+
+        var clienteInclude = await contexto.Clientes
+            .Include(cliente => cliente.EnderecoDeEntrega)
+            .FirstOrDefaultAsync(clienteBanco => clienteBanco.Id == cliente.Id);
+        
+        return Created($"clientes/{cliente.Id}", clienteInclude);
     }
 
     [HttpPut]
-    [Route("produtos/{id}")]
+    [Route("clientes/{id}")]
 
     public async Task<IActionResult> UpdateAsync(
         [FromServices] LojaContexto contexto
-        , [FromRoute] int id, [FromBody] Produto produto)
+        , [FromRoute] int id, [FromBody] AdicionarClienteDtos cliente)
     {
-        var produtoASerAtualizado = await contexto.Produtos
-            .FirstOrDefaultAsync(produto => produto.Id == id);
+        var clienteASerAtualizado = await contexto.Clientes
+            .FirstOrDefaultAsync(cliente => cliente.Id == id);
 
-        if (produtoASerAtualizado == null) return NotFound();
+        if (clienteASerAtualizado == null) return NotFound();
 
-        produtoASerAtualizado.Titulo = produto.Titulo;
-        produtoASerAtualizado.Preco = produto.Preco;
-        produtoASerAtualizado.UnidadeMedida = produto.UnidadeMedida;
-        produtoASerAtualizado.Categoria = produto.Categoria;
+        var validaEndereco = await contexto.Enderecos
+            .FirstOrDefaultAsync (endereco => endereco.Id == cliente.EnderecoId);
+
+        if(validaEndereco == null) return NotFound();
+
+        clienteASerAtualizado.Nome = cliente.Nome;
+        clienteASerAtualizado.EnderecoId = cliente.EnderecoId;
 
         contexto.SaveChangesAsync();
 
@@ -78,17 +105,17 @@ public class ClienteController : ControllerBase
     }
 
     [HttpDelete]
-    [Route("produtos/{id}")]
+    [Route("clientes/{id}")]
 
     public async Task<IActionResult> DeleteAsync(
         [FromRoute] int id, [FromServices] LojaContexto contexto)
     {
-        var produtoASerRemovido = await contexto
-            .Produtos.FirstOrDefaultAsync(produto => produto.Id == id);
+        var clienteASerRemovido = await contexto
+            .Clientes.FirstOrDefaultAsync(cliente => cliente.Id == id);
 
-        if (produtoASerRemovido == null) return NotFound();
+        if (clienteASerRemovido == null) return NotFound();
 
-        contexto.Produtos.Remove(produtoASerRemovido);
+        contexto.Clientes.Remove(clienteASerRemovido);
         contexto.SaveChangesAsync();
 
         return NoContent();

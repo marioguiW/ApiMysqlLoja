@@ -13,7 +13,16 @@ public class Program
 
         builder.Services.AddControllers();
 
-     
+        builder.Services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(builder => builder
+                .AllowAnyOrigin() // Permitir qualquer origem
+                .AllowAnyMethod() // Permitir qualquer método HTTP
+                .AllowAnyHeader() // Permitir qualquer cabeçalho
+            );
+        });
+
+
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
@@ -29,6 +38,7 @@ public class Program
 
         app.UseAuthorization();
 
+        app.UseCors();
 
         app.MapControllers();
 

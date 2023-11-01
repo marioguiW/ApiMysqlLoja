@@ -13,7 +13,12 @@ public class CompraController : ControllerBase
     [Route("compras")]
     public async Task<IActionResult> GetAllCompras([FromServices] LojaContexto contexto)
     {
-        var compras = await contexto.Compras.AsNoTracking().ToListAsync();
+        var compras = await contexto.Compras
+            .Include(compra => compra.Produto)
+            .Include(compra => compra.Cliente)
+                .ThenInclude(cliente => cliente.EnderecoDeEntrega)
+            .AsNoTracking()
+            .ToListAsync();
 
         if (compras == null) return NotFound();
 
@@ -22,20 +27,24 @@ public class CompraController : ControllerBase
 
     [HttpGet]
     [Route("compras/{id}")]
-    public async Task<IActionResult> GetProdutoId(
+    public async Task<IActionResult> GetCompraId(
         [FromServices] LojaContexto contexto, [FromRoute] int id)
     {
         var compra = await contexto.Compras
+            .Include(compra => compra.Produto)
+            .Include(compra => compra.Cliente)
+                .ThenInclude(cliente => cliente.EnderecoDeEntrega)
             .FirstOrDefaultAsync(compra => compra.Id == id);
 
         if (compra == null) return NotFound();
+
 
         return Ok(compra);
     }
 
     [HttpPost]
     [Route("compras")]
-    public async Task<IActionResult> PostProduto([FromServices] LojaContexto contexto
+    public async Task<IActionResult> PostCompra([FromServices] LojaContexto contexto
         ,[FromBody] AdicionarCompraDtos novaCompra)
     {
         if (!ModelState.IsValid)
@@ -50,9 +59,27 @@ public class CompraController : ControllerBase
             ProdutoId = novaCompra.ProdutoId,
         };
 
+        var validaCliente = await contexto.Clientes
+            .FirstOrDefaultAsync(cliente => cliente.Id == novaCompra.ClienteId);
+
+        if (validaCliente == null) return BadRequest();
+
+        var validaProduto = await contexto.Produtos
+            .FirstOrDefaultAsync(produto => produto.Id == novaCompra.ProdutoId);
+
+        if (validaProduto == null) return BadRequest();
+
         await contexto.Compras.AddAsync(compra);
         await contexto.SaveChangesAsync();
-        return Created($"compras/{compra.Id}", compra);
+
+        var compraIncludes = await contexto.Compras
+            .Include(compraBanco => compraBanco.Produto)
+            .Include(compraBanco => compraBanco.Cliente)
+                .ThenInclude(produto => produto.EnderecoDeEntrega)
+            .FirstOrDefaultAsync(clienteid => clienteid.Id == compra.Id);
+
+
+        return Created($"compras/{compra.Id}", compraIncludes);
     }
 
     [HttpPut]
@@ -60,39 +87,48 @@ public class CompraController : ControllerBase
 
     public async Task<IActionResult> UpdateAsync(
         [FromServices] LojaContexto contexto
-        , [FromRoute] int id, [FromBody] Compra compra)
+        , [FromRoute] int id, [FromBody] AdicionarCompraDtos compra)
     {
         var compraASerAtualizado = await contexto.Compras
             .FirstOrDefaultAsync(compra => compra.Id == id);
 
         if (compraASerAtualizado == null) return NotFound();
 
+        var validaProduto = await contexto.Produtos
+            .FirstOrDefaultAsync(produtos => produtos.Id == compra.ProdutoId);
+        
+        if (validaProduto == null) return NotFound();
+
+        var validaCliente = await contexto.Clientes
+            .FirstOrDefaultAsync(clientes => clientes.Id == compra.ProdutoId);
+
+        if (validaCliente == null) return NotFound();
+
         compraASerAtualizado.Quantidade = compra.Quantidade;
         compraASerAtualizado.ProdutoId = compra.ProdutoId;
         compraASerAtualizado.ClienteId = compra.ClienteId;
-
 
         contexto.SaveChangesAsync();
 
         return NoContent();
     }
 
-    //[HttpDelete]
-    //[Route("produtos/{id}")]
+    [HttpDelete]
+    [Route("compras/{id}")]
 
-    //public async Task<IActionResult> DeleteAsync(
-    //    [FromRoute] int id, [FromServices] LojaContexto contexto)
-    //{
-    //    var produtoASerRemovido = await contexto
-    //        .Produtos.FirstOrDefaultAsync(produto => produto.Id == id);
+    public async Task<IActionResult> DeleteAsync(
+        [FromRoute] int id, [FromServices] LojaContexto contexto)
+    {
+        var compraASerRemovida = await contexto
+            .Compras.FirstOrDefaultAsync(compra => compra.Id == id);
 
-    //    if (produtoASerRemovido == null) return NotFound();
+        if (compraASerRemovida == null) return NotFound();
 
-    //    contexto.Produtos.Remove(produtoASerRemovido);
-    //    contexto.SaveChangesAsync();
+        contexto.Compras.Remove(compraASerRemovida);
+        contexto.SaveChangesAsync();
 
-    //    return NoContent();
-    //}
+        return NoContent();
+    }
 
 
 }
