@@ -46,7 +46,8 @@ public class ProdutoController : ControllerBase
             Titulo = novoProduto.Titulo,
             Categoria = novoProduto.Categoria,
             Preco = novoProduto.Preco,
-            UnidadeMedida = novoProduto.UnidadeMedida
+            UnidadeMedida = novoProduto.UnidadeMedida,
+            Quantidade = novoProduto.Quantidade
         };
 
         await contexto.Produtos.AddAsync(produto);

@@ -7,4 +7,5 @@ public class Produto
     public string Categoria { get; set; }
     public double Preco {  get; set; }
     public string UnidadeMedida { get; set; }
+    public int Quantidade {  get; set; }
 }
