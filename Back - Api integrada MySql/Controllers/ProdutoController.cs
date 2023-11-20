@@ -71,8 +71,12 @@ public class ProdutoController : ControllerBase
         produtoASerAtualizado.Preco = produto.Preco;
         produtoASerAtualizado.UnidadeMedida = produto.UnidadeMedida;
         produtoASerAtualizado.Categoria = produto.Categoria;
+        produtoASerAtualizado.Quantidade = produto.Quantidade;
+
 
         contexto.SaveChangesAsync();
+
+        Console.WriteLine(produtoASerAtualizado.ToString());
 
         return NoContent();
     }

@@ -12,6 +12,7 @@ public class LojaContexto : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         string connectionString = "server=localhost;database=armax;user=root;password=mariogui123";
-        optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+        optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString),
+            mysqlOptions => mysqlOptions.EnableRetryOnFailure());
     }
 }

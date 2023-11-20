@@ -53,6 +53,8 @@ public class ClienteController : ControllerBase
         var cliente = new Cliente
         {
             Nome = novoCliente.Nome,
+            Email = novoCliente.Email,
+            Senha = novoCliente.Senha,
             EnderecoId = novoCliente.EnderecoId
         };
 
@@ -97,6 +99,8 @@ public class ClienteController : ControllerBase
         if(validaEndereco == null) return NotFound();
 
         clienteASerAtualizado.Nome = cliente.Nome;
+        clienteASerAtualizado.Email = cliente.Email;
+        clienteASerAtualizado.Senha = cliente.Senha;
         clienteASerAtualizado.EnderecoId = cliente.EnderecoId;
 
         contexto.SaveChangesAsync();
