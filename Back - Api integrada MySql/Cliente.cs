@@ -8,5 +8,7 @@ public class Cliente
     public string Senha { get; set; }
     public Boolean isAdmin { get; set; }
     public int EnderecoId { get; set; }
+    public string AcessToken { get; set; }
+    public string RefreshToken {  get; set; }
     public Endereco EnderecoDeEntrega { get; set; }
 }

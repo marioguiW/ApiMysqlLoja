@@ -56,7 +56,9 @@ public class ClienteController : ControllerBase
             Email = novoCliente.Email,
             Senha = novoCliente.Senha,
             EnderecoId = novoCliente.EnderecoId,
-            isAdmin = false
+            isAdmin = false,
+            AcessToken = null,
+            RefreshToken = null
         };
 
         var verificaEndereco = await contexto

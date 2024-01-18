@@ -52,3 +52,11 @@ C:\Users\unima\OneDrive\Documentos\Asp Net Teste\CsApiMySqlReact\Back - Api inte
 C:\Users\unima\OneDrive\Documentos\Asp Net Teste\CsApiMySqlReact\Back - Api integrada MySql\Back - Api integrada MySql\bin\Debug\net6.0\System.Text.Encodings.Web.dll
 C:\Users\unima\OneDrive\Documentos\Asp Net Teste\CsApiMySqlReact\Back - Api integrada MySql\Back - Api integrada MySql\bin\Debug\net6.0\System.Text.Json.dll
 C:\Users\unima\OneDrive\Documentos\Asp Net Teste\CsApiMySqlReact\Back - Api integrada MySql\Back - Api integrada MySql\bin\Debug\net6.0\runtimes\browser\lib\net6.0\System.Text.Encodings.Web.dll
+C:\Users\unima\OneDrive\Documentos\Asp Net Teste\CsApiMySqlReact\Back - Api integrada MySql\Back - Api integrada MySql\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\unima\OneDrive\Documentos\Asp Net Teste\CsApiMySqlReact\Back - Api integrada MySql\Back - Api integrada MySql\bin\Debug\net6.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\unima\OneDrive\Documentos\Asp Net Teste\CsApiMySqlReact\Back - Api integrada MySql\Back - Api integrada MySql\bin\Debug\net6.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\unima\OneDrive\Documentos\Asp Net Teste\CsApiMySqlReact\Back - Api integrada MySql\Back - Api integrada MySql\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\unima\OneDrive\Documentos\Asp Net Teste\CsApiMySqlReact\Back - Api integrada MySql\Back - Api integrada MySql\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\unima\OneDrive\Documentos\Asp Net Teste\CsApiMySqlReact\Back - Api integrada MySql\Back - Api integrada MySql\bin\Debug\net6.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\unima\OneDrive\Documentos\Asp Net Teste\CsApiMySqlReact\Back - Api integrada MySql\Back - Api integrada MySql\bin\Debug\net6.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\unima\OneDrive\Documentos\Asp Net Teste\CsApiMySqlReact\Back - Api integrada MySql\Back - Api integrada MySql\bin\Debug\net6.0\System.Security.Permissions.dll
