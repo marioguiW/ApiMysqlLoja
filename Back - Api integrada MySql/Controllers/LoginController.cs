@@ -3,6 +3,8 @@ using Back___Api_integrada_MySql.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace Back___Api_integrada_MySql.Controllers
 {
@@ -36,10 +38,47 @@ namespace Back___Api_integrada_MySql.Controllers
 
             return new
             {
-                user = cliente,
-                acessToken = token,
-                refreshToken = refreshToken,
+                user = cliente
             };
+        }
+
+        [HttpPost]
+        [Route("session")]
+        public async Task<IActionResult> Session(string accessToken)
+        {
+            try
+            {
+                var principal = TokenService.GetPrincipalFromExpiredToken(accessToken);
+
+                // Verifica se o principal contém a claim de expiração
+                var expirationDateClaim = principal.FindFirst(JwtRegisteredClaimNames.Exp);
+                if (expirationDateClaim == null)
+                {
+                    return Unauthorized("Token inválido - data de expiração ausente");
+                }
+
+                // Obtém a data de expiração do token
+                var expirationDateUnix = long.Parse(expirationDateClaim.Value);
+                var expirationDateTime = DateTimeOffset.FromUnixTimeSeconds(expirationDateUnix).UtcDateTime;
+
+                // Verifica se o token está expirado
+                if (expirationDateTime <= DateTime.UtcNow)
+                {
+                    return Unauthorized("Token expirado");
+                }
+
+                // Exemplo: Obtendo o nome do usuário do token
+                var userName = principal.FindFirst(ClaimTypes.Name)?.Value;
+
+                // Faça o que precisa com as informações do token
+
+                return Ok("Token válido");
+            }
+            catch (SecurityTokenException ex)
+            {
+                // Se houver uma exceção, o token é inválido
+                return Unauthorized("Token inválido");
+            }
         }
 
         public class Tokens
@@ -57,15 +96,12 @@ namespace Back___Api_integrada_MySql.Controllers
 
             var clientToChangeTokens = await contexto.Clientes.FirstOrDefaultAsync(x => x.AcessToken == tokens.acessToken);
 
-            Console.WriteLine("Esquisito :", clientToChangeTokens.RefreshToken);
-            Console.WriteLine("Esquisito 2: ", tokens.refreshToken);
-
             if (clientToChangeTokens.RefreshToken != tokens.refreshToken)
             {
-                await Console.Out.WriteLineAsync(clientToChangeTokens.RefreshToken);
-                await Console.Out.WriteLineAsync(tokens.refreshToken);
-                Console.WriteLine("erro né pai tlg");
-
+                return new ObjectResult(new
+                {
+                    Error = "Refresh Token inválido"
+                });
             }
 
             var newJwtToken = TokenService.GenerateToken(principal.Claims);
