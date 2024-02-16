@@ -50,14 +50,23 @@ public class ClienteController : ControllerBase
             return BadRequest();
         }
 
+        var endereco = new Endereco
+        {
+            Cep = novoCliente.Endereco.Cep,
+            Logradouro = novoCliente.Endereco.Logradouro,
+            Bairro = novoCliente.Endereco.Bairro,
+            Cidade = novoCliente.Endereco.Cidade,
+            Numero = novoCliente.Endereco.Cep,
+        };
+
+
         var cliente = new Cliente
         {
             Nome = novoCliente.Nome,
             Email = novoCliente.Email,
             Senha = novoCliente.Senha,
-            EnderecoId = novoCliente.EnderecoId,
             isAdmin = false,
-            AcessToken = null,
+            AccessToken = null,
             RefreshToken = null
         };
 

@@ -20,7 +20,7 @@ namespace Back___Api_integrada_MySql.Services
                     new Claim(ClaimTypes.Name, cliente.Nome),
                     new Claim(ClaimTypes.Role, cliente.isAdmin.ToString()),
                 }),
-                Expires = DateTime.UtcNow.AddSeconds(30),
+                Expires = DateTime.UtcNow.AddSeconds(15),
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
@@ -36,7 +36,7 @@ namespace Back___Api_integrada_MySql.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddHours(2),
+                Expires = DateTime.UtcNow.AddSeconds(15),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
                  SecurityAlgorithms.HmacSha256Signature)
             };

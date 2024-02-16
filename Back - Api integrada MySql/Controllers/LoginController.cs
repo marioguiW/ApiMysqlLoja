@@ -28,10 +28,10 @@ namespace Back___Api_integrada_MySql.Controllers
             var token = TokenService.GenerateToken(cliente);
             var refreshToken = TokenService.GenerateRefreshToken();
 
-            cliente.AcessToken = token;
+            cliente.AccessToken = token;
             cliente.RefreshToken = refreshToken;
 
-            contexto.SaveChangesAsync();
+            await contexto.SaveChangesAsync();
             
 
             cliente.Senha = "";
@@ -42,7 +42,7 @@ namespace Back___Api_integrada_MySql.Controllers
             };
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("session")]
         public async Task<IActionResult> Session(string accessToken)
         {
@@ -83,7 +83,7 @@ namespace Back___Api_integrada_MySql.Controllers
 
         public class Tokens
         {
-            public string acessToken { get; set; }
+            public string accessToken { get; set; }
             public string refreshToken { get; set; }
         }
 
@@ -91,31 +91,45 @@ namespace Back___Api_integrada_MySql.Controllers
         [Route("refresh")]
         public async Task<IActionResult> Refresh([FromBody] Tokens tokens, [FromServices] LojaContexto contexto)
         {
-            var principal = TokenService.GetPrincipalFromExpiredToken(tokens.acessToken);
+
+            Console.WriteLine(tokens);
+            var principal = TokenService.GetPrincipalFromExpiredToken(tokens.accessToken);
             var username = principal.Identity.Name;
 
-            var clientToChangeTokens = await contexto.Clientes.FirstOrDefaultAsync(x => x.AcessToken == tokens.acessToken);
+            var clientToChangeTokens = await contexto.Clientes.FirstOrDefaultAsync(x => x.AccessToken == tokens.accessToken);
 
-            if (clientToChangeTokens.RefreshToken != tokens.refreshToken)
+            if (clientToChangeTokens == null)
             {
-                return new ObjectResult(new
+                var erro = new ObjectResult(new
+                {
+                    Error = "Cliente não encontrado"
+                });
+                return NotFound(erro);
+            }
+            if (clientToChangeTokens?.RefreshToken != tokens.refreshToken)
+            {
+                var erro = new ObjectResult(new
                 {
                     Error = "Refresh Token inválido"
                 });
+
+                return Unauthorized(erro);
             }
 
             var newJwtToken = TokenService.GenerateToken(principal.Claims);
             var newJwtRefresh = TokenService.GenerateRefreshToken();
 
-            clientToChangeTokens.AcessToken = newJwtToken;
+            clientToChangeTokens.AccessToken = newJwtToken;
             clientToChangeTokens.RefreshToken = newJwtRefresh;
-            contexto.SaveChangesAsync();
+            await contexto.SaveChangesAsync();
 
-            return new ObjectResult(new
+            var newTokens = new ObjectResult(new
             {
-                acessToken = newJwtToken,
+                accessToken = newJwtToken,
                 refreshToken = newJwtRefresh
             });
+
+            return Ok(newTokens);
         }
     }
 

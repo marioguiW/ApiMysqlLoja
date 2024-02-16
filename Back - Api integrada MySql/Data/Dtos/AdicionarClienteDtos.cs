@@ -10,7 +10,6 @@ public class AdicionarClienteDtos
     public string Email { get; set; }
     [Required(ErrorMessage = "Senha deve ser obrigatório")]
     public string Senha { get; set; }
-
-    [Required(ErrorMessage = "O id de endereço deve ser obrigatório!")]
-    public int EnderecoId { get; set; }
+    [Required]
+    public Endereco Endereco { get; set; }
 }
