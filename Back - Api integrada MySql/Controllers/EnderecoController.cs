@@ -48,6 +48,7 @@ public class EnderecoController : ControllerBase
             Bairro = novoEndereco.Bairro,
             Cidade = novoEndereco.Cidade,
             Numero = novoEndereco.Numero,
+
         };
 
         await contexto.Enderecos.AddAsync(endereco);

@@ -5,11 +5,13 @@ namespace Back___Api_integrada_MySql.Data.Dtos;
 public class AdicionarClienteDtos
 {
     [Required(ErrorMessage = "O Nome do cliente deve ser obrigatório!")]
-    public string Nome {  get; set; }
+    public string Nome { get; set; }
     [Required(ErrorMessage = "O email deve ser obrigatório")]
     public string Email { get; set; }
     [Required(ErrorMessage = "Senha deve ser obrigatório")]
+    public int EnderecoId { get; set; }
     public string Senha { get; set; }
     [Required]
     public Endereco Endereco { get; set; }
+
 }

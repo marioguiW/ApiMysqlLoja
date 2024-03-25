@@ -43,7 +43,7 @@ public class ClienteController : ControllerBase
     [HttpPost]
     [Route("clientes")]
     public async Task<IActionResult> PostCliente([FromServices] LojaContexto contexto
-        ,[FromBody] AdicionarClienteDtos novoCliente)
+        , [FromBody] AdicionarClienteDtos novoCliente)
     {
         if (!ModelState.IsValid)
         {
@@ -56,19 +56,29 @@ public class ClienteController : ControllerBase
             Logradouro = novoCliente.Endereco.Logradouro,
             Bairro = novoCliente.Endereco.Bairro,
             Cidade = novoCliente.Endereco.Cidade,
-            Numero = novoCliente.Endereco.Cep,
+            Numero = novoCliente.Endereco.Numero,
         };
 
+        var verificaEmail = await contexto.Clientes.FirstOrDefaultAsync(a => a.Email == novoCliente.Email);
+
+        if (verificaEmail != null)
+        {
+            return Conflict("Email já em uso");
+        }
 
         var cliente = new Cliente
         {
             Nome = novoCliente.Nome,
             Email = novoCliente.Email,
             Senha = novoCliente.Senha,
+            EnderecoId = endereco.Id,
             isAdmin = false,
             AccessToken = null,
             RefreshToken = null
         };
+
+        await contexto.Enderecos.AddAsync(endereco);
+        await contexto.SaveChangesAsync();
 
         var verificaEndereco = await contexto
             .Enderecos
@@ -76,20 +86,13 @@ public class ClienteController : ControllerBase
 
         Console.WriteLine(verificaEndereco);
 
-        if (verificaEndereco == null)
-        {
-            return NotFound();
-        }
-
         await contexto.Clientes.AddAsync(cliente);
         await contexto.SaveChangesAsync();
-
-        
 
         var clienteInclude = await contexto.Clientes
             .Include(cliente => cliente.EnderecoDeEntrega)
             .FirstOrDefaultAsync(clienteBanco => clienteBanco.Id == cliente.Id);
-        
+
         return Created($"clientes/{cliente.Id}", clienteInclude);
     }
 
@@ -106,9 +109,9 @@ public class ClienteController : ControllerBase
         if (clienteASerAtualizado == null) return NotFound();
 
         var validaEndereco = await contexto.Enderecos
-            .FirstOrDefaultAsync (endereco => endereco.Id == cliente.EnderecoId);
+            .FirstOrDefaultAsync(endereco => endereco.Id == cliente.EnderecoId);
 
-        if(validaEndereco == null) return NotFound();
+        if (validaEndereco == null) return NotFound();
 
         clienteASerAtualizado.Nome = cliente.Nome;
         clienteASerAtualizado.Email = cliente.Email;
