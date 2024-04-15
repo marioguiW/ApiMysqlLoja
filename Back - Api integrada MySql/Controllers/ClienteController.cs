@@ -59,6 +59,9 @@ public class ClienteController : ControllerBase
             Numero = novoCliente.Endereco.Numero,
         };
 
+        await contexto.Enderecos.AddAsync(endereco);
+        await contexto.SaveChangesAsync();
+
         var verificaEmail = await contexto.Clientes.FirstOrDefaultAsync(a => a.Email == novoCliente.Email);
 
         if (verificaEmail != null)
@@ -76,9 +79,6 @@ public class ClienteController : ControllerBase
             AccessToken = null,
             RefreshToken = null
         };
-
-        await contexto.Enderecos.AddAsync(endereco);
-        await contexto.SaveChangesAsync();
 
         var verificaEndereco = await contexto
             .Enderecos

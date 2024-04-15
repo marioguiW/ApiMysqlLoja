@@ -8,4 +8,6 @@ public class Produto
     public double Preco {  get; set; }
     public string UnidadeMedida { get; set; }
     public int Quantidade {  get; set; }
+    public string UrlImagem { get; set; }
+    //public string UrlImagem { get; set; }
 }

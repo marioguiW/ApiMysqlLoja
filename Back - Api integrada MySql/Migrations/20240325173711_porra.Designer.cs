@@ -2,6 +2,7 @@
 using Back___Api_integrada_MySql.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Back___Api_integrada_MySql.Migrations
 {
     [DbContext(typeof(LojaContexto))]
-    partial class LojaContextoModelSnapshot : ModelSnapshot
+    [Migration("20240325173711_porra")]
+    partial class porra
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -129,10 +132,6 @@ namespace Back___Api_integrada_MySql.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("UnidadeMedida")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("UrlImagem")
                         .IsRequired()
                         .HasColumnType("longtext");
 

@@ -47,7 +47,8 @@ public class ProdutoController : ControllerBase
             Categoria = novoProduto.Categoria,
             Preco = novoProduto.Preco,
             UnidadeMedida = novoProduto.UnidadeMedida,
-            Quantidade = novoProduto.Quantidade
+            Quantidade = novoProduto.Quantidade,
+            UrlImagem = novoProduto.UrlImagem
         };
 
         await contexto.Produtos.AddAsync(produto);
@@ -71,7 +72,7 @@ public class ProdutoController : ControllerBase
         produtoASerAtualizado.Preco = produto.Preco;
         produtoASerAtualizado.UnidadeMedida = produto.UnidadeMedida;
         produtoASerAtualizado.Categoria = produto.Categoria;
-
+        produtoASerAtualizado.UrlImagem = produto.UrlImagem;
         produtoASerAtualizado.Quantidade = produto.Quantidade;
 
 
@@ -79,7 +80,7 @@ public class ProdutoController : ControllerBase
 
         Console.WriteLine(produtoASerAtualizado.ToString());
 
-        return NoContent();
+        return Ok(produtoASerAtualizado);
     }
 
     [HttpDelete]
